@@ -1,0 +1,19 @@
+Package: fedavgR
+Title: Federated Averaging on MNIST
+Version: 0.1.0
+Authors@R: person("Antigravity", role = c("aut", "cre"), email = "antigravity@example.com")
+Description: Re-implementation of the FedAvg MNIST experiment (McMahan et al., 2017) using torch.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Imports: 
+    torch,
+    torchvision,
+    coro,
+    methods
+Suggests: 
+    testthat,
+    devtools,
+    usethis

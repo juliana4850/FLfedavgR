@@ -1,0 +1,8 @@
+^renv$
+^renv\.lock$
+^docs$
+^data$
+^.vscode$
+^.gemini$
+^inst/tutorials/.*\.html$
+
