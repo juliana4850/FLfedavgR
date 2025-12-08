@@ -66,12 +66,40 @@ FEDAVGR_QUICK=1 Rscript inst/tutorials/paper_reproduction_cnn.R
 Rscript inst/tutorials/paper_reproduction_cnn.R
 ```
 
-### 📊 Outputs
+### 📊 Example Outputs
 
 Results are saved to `inst/reproduction_outputs/`:
 *   **`metrics_mnist.csv`**: Raw logs of every round (accuracy, loss, etc.).
 *   **`figure2_reproduction.png`**: Plot comparing FedAvg vs FedSGD.
 *   **`table2_reproduction.csv`**: Summary table of rounds to reach target accuracy.
+
+### Figure 2: Test Set Accuracy vs Communication Rounds for MNIST CNN (IID)
+
+<table>
+  <tr>
+    <td><img src="inst/reproduction_outputs/figure2_reproduction_IID.png" alt="MNIST accuracy vs rounds (reproduction)" width="465"></td>
+    <td><img src="inst/reproduction_outputs/figure2_mcmahan_et_al_2017_IID.png" alt="MNIST accuracy vs rounds (paper)" width="400"></td>
+  </tr>
+  <tr>
+    <td align="center"><em>Reproduction of Figure 2</em></td>
+    <td align="center"><em>McMahan et al. (2017) Figure 2</em></td>
+  </tr>
+</table>
+
+### Table 2: Communication Rounds to 99% Test Accuracy
+
+Reproduction from McMahan et al. (2017)
+
+|  CNN   | E  | B  |  u  |    IID (Reproduction)     | IID (McMahan et al. (2017)) |
+|:------:|:--:|:--:|:---:|:----------:|:-------:|
+| FedSGD | 1  | ∞  | 1 |    702     |   626    |
+| FedAvg | 5  | ∞  | 5 | 230 (3.1×) |   179 (3.5x)    |
+| FedAvg | 20 | ∞  | 20 | 128 (5.5×) |   234 (2.7x)    |
+| FedAvg | 1  | 10 | 60 | 45 (15.6×) |   34 (18.4x)    |
+| FedAvg | 5  | 10 | 300 | 26 (27.0×) |    20 (31.3x)     |
+
+
+**Note**: Values show rounds to target (speedup vs FedSGD baseline).
 
 ## 📁 Repository Structure
 

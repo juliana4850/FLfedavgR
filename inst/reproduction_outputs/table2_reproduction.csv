@@ -1,7 +1,6 @@
-"method","E","B","u","IID","nonIID"
-"FedAvg",1,Inf,1,"—","—"
-"FedAvg",5,Inf,5,"229 (3.1×)","—"
-"FedAvg",5,Inf,1,"—","—"
-"FedAvg",20,Inf,1,"128 (5.5×)","—"
-"FedAvg",20,Inf,20,"—","—"
-"FedSGD",1,Inf,1,"702 (1.0×)","—"
+CNN,E,B,u,IID,Non-IID
+FedSGD,1,∞,1,702,--
+FedAvg,5,∞,5,230 (3.1×),--
+FedAvg,20,∞,20,128 (5.5×),--
+FedAvg,1,10,60,45 (15.6×),89
+FedAvg,5,10,300,26 (27.0×),2
