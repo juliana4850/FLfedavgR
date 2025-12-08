@@ -1,0 +1,7 @@
+"method","E","B","u","IID","nonIID"
+"FedAvg",1,Inf,1,"—","—"
+"FedAvg",5,Inf,5,"229 (3.1×)","—"
+"FedAvg",5,Inf,1,"—","—"
+"FedAvg",20,Inf,1,"128 (5.5×)","—"
+"FedAvg",20,Inf,20,"—","—"
+"FedSGD",1,Inf,1,"702 (1.0×)","—"

@@ -25,7 +25,8 @@ fedavg_simulation <- function(client_datasets,
                               optimizer_generator = function(lr) function(p) torch::optim_sgd(p, lr = lr),
                               lr_scheduler = function(r) 0.1,
                               seed = 123,
-                              device = "cpu") {
+                              device = "cpu",
+                              log_file = NULL) {
     if (!is.null(seed)) {
         set.seed(seed)
         torch::torch_manual_seed(seed)
@@ -89,13 +90,37 @@ fedavg_simulation <- function(client_datasets,
         # Evaluate
         metrics <- evaluation_fn(global_model, device)
 
-        # Log
+        # Log to console
         elapsed <- as.numeric(difftime(Sys.time(), start_time, units = "secs"))
         metrics_str <- paste(names(metrics), sprintf("%.4f", unlist(metrics)), sep = "=", collapse = ", ")
         cat(sprintf("Round %d/%d: %s (%.1fs)\n", r, rounds, metrics_str, elapsed))
 
+        # Log to CSV if requested
+        if (!is.null(log_file)) {
+            log_row <- data.frame(
+                timestamp = Sys.time(),
+                round = r,
+                elapsed = elapsed,
+                as.data.frame(metrics)
+            )
+
+            # Format timestamp properly
+            log_row$timestamp <- format(log_row$timestamp, "%Y-%m-%d %H:%M:%OS5")
+
+            if (!file.exists(log_file)) {
+                write.table(log_row, log_file, sep = ",", row.names = FALSE, col.names = TRUE, quote = FALSE)
+            } else {
+                # Efficient append using cat
+                line <- paste(as.character(log_row[1, ]), collapse = ",")
+                cat(line, "\n", file = log_file, append = TRUE, sep = "")
+            }
+        }
+
         # Store history
         history[[r]] <- c(list(round = r, time = elapsed), metrics)
+
+        # Force garbage collection to prevent memory buildup
+        gc()
     }
 
     list(

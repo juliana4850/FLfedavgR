@@ -11,57 +11,90 @@ This package serves two purposes:
 This package requires `torch` and `torchvision`.
 
 ```r
-# Install dependencies
-install.packages(c("torch", "torchvision", "devtools", "ggplot2", "dplyr", "readr", "tidyr"))
+# 1. Install dependencies
+install.packages(c("torch", "torchvision", "devtools", "ggplot2", "dplyr", "readr", "tidyr", "remotes"))
+
+# 2. Install Torch (downloads libtorch)
 torch::install_torch()
 
-# Install fedavgR
-devtools::install()
+# 3. Install fedavgR
+# Run this from the root of the repository
+remotes::install_local(".", force = TRUE)
 ```
 
 ## 🔬 Paper Reproduction (McMahan et al. 2017)
 
-Reproduce the key results (Figure 2 and Table 2) from the original FedAvg paper.
+We provide scripts to reproduce Figure 2 and Table 2 from the paper.
 
-### 1. CNN Experiments (Figure 2 & Table 2)
-Reproduces the CNN convergence results on MNIST.
+### 1. Robust Reproduction (Recommended)
+
+For the full suite of experiments (Table 2), use the **robust runner**. This script:
+*   Runs experiments in chunks (e.g., 50 rounds) to prevent memory leaks.
+*   Automatically restarts the R process.
+*   Saves checkpoints (`checkpoint_latest.rds`) to resume if interrupted.
+*   Covers all 7 configurations (IID/Non-IID, various batch sizes).
 
 ```bash
-# Quick Mode (~2 hours): 1000 rounds, subset of configs
-FEDAVGR_QUICK=1 Rscript inst/tutorials/paper_reproduction_cnn.R
+# Run all experiments in the background
+nohup Rscript run_robust_all.R > run_robust.log 2>&1 &
 
-# Full Mode (~7.5 hours): 1000 rounds, all configs
+# Monitor progress
+tail -f run_robust.log
+```
+
+### 2. MNIST Experiments Reproduction
+
+Use `paper_reproduction_cnn.R` for single-process execution.
+
+**⚠️ Note:** Running the full 1000 rounds in a single process on a personal machine may lead to Out-Of-Memory (OOM) errors. Use Quick Mode option to run only a subset of configurations. Use the robust runner for the full table.
+
+```bash
+# Quick Mode: 1000 rounds, subset of configs for both IID and Non-IID partitions
+FEDAVGR_QUICK=1 Rscript inst/tutorials/paper_reproduction_cnn.R
+```
+
+**Quick Mode Configurations (B=10 only):**
+
+| E (Epochs) | B (Batch Size) | Method |
+| :---: | :---: | :---: |
+| 1 | 10 | FedAvg |
+| 5 | 10 | FedAvg |
+| 20 | 10 | FedAvg |
+
+```bash
+# Full Mode: 1000 rounds, all configs
 Rscript inst/tutorials/paper_reproduction_cnn.R
 ```
 
-The CNN architecture is detailed in the paper and used to create the **Federated Averaging MNIST** baseline.
+### 📊 Outputs
 
-| Layer | Details|
-| ----- | ------ |
-| 1 | Conv2D(1, 32, 5, 1, 1) <br/> ReLU, MaxPool2D(2, 2, 1)  |
-| 2 | Conv2D(32, 64, 5, 1, 1) <br/> ReLU, MaxPool2D(2, 2, 1) |
-| 3 | FC(64 * 7 * 7, 512) <br/> ReLU |
-| 5 | FC(512, 10) |
+Results are saved to `inst/reproduction_outputs/`:
+*   **`metrics_mnist.csv`**: Raw logs of every round (accuracy, loss, etc.).
+*   **`figure2_reproduction.png`**: Plot comparing FedAvg vs FedSGD.
+*   **`table2_reproduction.csv`**: Summary table of rounds to reach target accuracy.
 
-### 2. 2NN Experiments (MLP)
-Reproduces the 2NN (Multilayer Perceptron) results.
+## 📁 Repository Structure
 
-```bash
-Rscript inst/tutorials/paper_reproduction_2nn.R
 ```
-
-**Outputs** are saved to `docs/examples/`.
-
-<div align="center">
-  <img src="docs/examples/mnist_comm_accuracy.png" alt="MNIST accuracy vs rounds (IID)" width="480"><br>
-  <em>Figure 1: MNIST (IID)</em>
-</div>
-
-<div align="center">
-  <img src="docs/examples/mnist_comm_accuracy_nonIID.png" alt="MNIST accuracy vs rounds (non-IID)" width="480"><br>
-  <em>Figure 2: MNIST (non-IID)</em>
-</div>
-
+fedavgR/
+├── R/                          # Core package code
+│   ├── fedavg_simulation.R    # Generic FedAvg framework
+│   ├── server_loop.R          # MNIST-specific wrapper
+│   ├── train_*.R              # Training functions
+│   ├── models_*.R             # Model architectures
+│   ├── partitions.R           # Data partitioning
+│   └── ...
+├── inst/
+│   ├── examples/              # Example scripts
+│   ├── tutorials/             # Paper reproduction scripts
+│   │   ├── paper_reproduction_cnn.R
+│   │   └── paper_reproduction_2nn.R
+│   └── reproduction_outputs/  # Reproduction results
+│       └── metrics_mnist.csv  # Main log file
+├── run_robust_all.R           # Robust experiment runner
+├── tests/                     # Unit tests
+└── README.md
+```
 
 ## 🚀 General Usage
 
@@ -136,14 +169,6 @@ res <- run_fedavg_mnist(
   rounds = 100
 )
 ```
-
-## 📊 Features
-
--   **Flexible Architecture**: Plug in any `torch` model and dataset.
--   **Partitioning**: Built-in IID and Non-IID (shards) partitioners for MNIST.
--   **Aggregation**: Standard FedAvg weighted aggregation.
--   **Experiment Tracking**: Logs accuracy, loss, and parameters per round.
--   **Reproducibility**: Seed control for deterministic runs.
 
 ## 📚 Reference
 

@@ -32,6 +32,16 @@ library(dplyr)
 library(tidyr)
 library(readr)
 
+# Load MNIST-specific helpers (examples of using the generic framework)
+source("inst/tutorials/mnist_helpers/mnist_data.R")
+source("inst/tutorials/mnist_helpers/mnist_models.R")
+source("inst/tutorials/mnist_helpers/mnist_training.R")
+source("inst/tutorials/mnist_helpers/mnist_fedavg.R")
+source("inst/tutorials/mnist_helpers/mnist_partitions.R")
+source("inst/tutorials/mnist_helpers/mnist_logging.R")
+source("inst/tutorials/mnist_helpers/mnist_plotting.R")
+
+
 # Set seeds
 set.seed(123)
 torch::torch_manual_seed(123)
@@ -81,9 +91,9 @@ cat(sprintf("  Rounds: %d\n", ROUNDS))
 cat(sprintf("  Clients: %d\n\n", CLIENTS))
 
 # Clear previous metrics
-if (file.exists("metrics_mnist.csv")) {
-    file.remove("metrics_mnist.csv")
-    cat("Removed existing metrics_mnist.csv\n\n")
+if (file.exists("inst/reproduction_outputs/metrics_mnist.csv")) {
+    file.remove("inst/reproduction_outputs/metrics_mnist.csv")
+    cat("Removed existing inst/reproduction_outputs/metrics_mnist.csv\n\n")
 }
 
 # ============================================================================
@@ -141,7 +151,7 @@ run_one <- function(partition_name, B, C) {
                     u = row$u,
                     target = row$target,
                     rounds_to_target = row$rtt,
-                    path = "metrics_mnist.csv"
+                    path = "inst/reproduction_outputs/metrics_mnist.csv"
                 )
             }
 
@@ -283,16 +293,16 @@ cat(paste(md_lines, collapse = "\n"))
 cat("\n\n")
 
 # Save long-form results
-if (file.exists("metrics_mnist.csv")) {
-    df_long <- read.csv("metrics_mnist.csv", stringsAsFactors = FALSE)
+if (file.exists("inst/reproduction_outputs/metrics_mnist.csv")) {
+    df_long <- read.csv("inst/reproduction_outputs/metrics_mnist.csv", stringsAsFactors = FALSE)
     write.csv(df_long, "docs/examples/mnist_2nn_results_long.csv", row.names = FALSE)
     cat(sprintf("Saved: docs/examples/mnist_2nn_results_long.csv (%d rows)\n", nrow(df_long)))
 }
 
 # Generate plots
-if (file.exists("metrics_mnist.csv")) {
-    cat("\nGenerating plots...\n")
-    df <- read.csv("metrics_mnist.csv", stringsAsFactors = FALSE)
+if (file.exists("inst/reproduction_outputs/metrics_mnist.csv")) {
+    cat("Generating Table 1...\n")
+    df <- read.csv("inst/reproduction_outputs/metrics_mnist.csv", stringsAsFactors = FALSE)
     df <- subset(df, model == "2NN" | toupper(model) == "2NN")
 
     if (nrow(df) > 0) {

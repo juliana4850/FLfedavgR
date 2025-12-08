@@ -9,3 +9,9 @@ renv/local/
 renv/staging/
 data/
 reference/
+
+# Temporary files
+*.log
+*_test.R
+*_debug.R
+Rplots.pdf

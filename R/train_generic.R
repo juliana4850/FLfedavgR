@@ -65,9 +65,15 @@ client_train_generic <- function(dataset, model, init_params, epochs = 1,
         }
     }
 
+    # Extract params before cleanup
+    params <- flatten_params(model)
+
+    # Explicit cleanup to prevent memory leaks
+    rm(model, optimizer, dl, iter, batch, x, y, output, loss)
+
     # Return updated parameters and sample count
     list(
-        params = flatten_params(model),
+        params = params,
         n = n_samples
     )
 }
