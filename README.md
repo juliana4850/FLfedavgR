@@ -1,6 +1,6 @@
-# fedavgR: Federated Averaging in R
+# fedavgR: Federated Learning with Federated Averaging in R
 
-A robust implementation of the **Federated Averaging (FedAvg)** algorithm in R using `torch`.
+An implementation of **Federated Learning (FL)** using the **Federated Averaging (FedAvg)** algorithm in R using `torch`.
 
 This package serves two purposes:
 1.  **Paper Reproduction**: Exact reproduction of experiments from McMahan et al. (2017) on MNIST (IID and Non-IID).
@@ -22,56 +22,66 @@ torch::install_torch()
 remotes::install_local(".", force = TRUE)
 ```
 
-## 🔬 Paper Reproduction (McMahan et al. 2017)
+## 📊 Paper Reproduction
 
-We provide scripts to reproduce Figure 2 and Table 2 from the paper.
+There are **two ways** to reproduce the paper results, depending on your needs:
 
-### 1. Robust Reproduction (Recommended)
+### Option 1: Robust Runner (Recommended for Full Reproduction)
 
-For the full suite of experiments (Table 2), use the **robust runner**. This script:
-*   Runs experiments in chunks (e.g., 50 rounds) to prevent memory leaks.
-*   Automatically restarts the R process.
-*   Saves checkpoints (`checkpoint_latest.rds`) to resume if interrupted.
-*   Covers all 7 configurations (IID/Non-IID, various batch sizes).
+**Use this for:**
+- ✅ Full paper reproduction (all 1000 rounds)
+- ✅ Unattended overnight/weekend runs
+- ✅ Limited memory environments
+- ✅ Production/final runs
+
+The robust runner executes experiments in **50-round chunks** with automatic checkpointing and memory cleanup between chunks. This prevents OOM crashes and allows safe resumption if interrupted.
 
 ```bash
-# Run all experiments in the background
-nohup Rscript run_robust_all.R > run_robust.log 2>&1 &
+# Run all experiments in background
+nohup Rscript inst/tutorials/run_robust_experiments.R > robust.log 2>&1 &
 
 # Monitor progress
-tail -f run_robust.log
+tail -f robust.log
+tail -f inst/reproduction_outputs/metrics_mnist.csv
 ```
 
-### 2. MNIST Experiments Reproduction
+**Features:**
+- Automatic checkpoint saving and resume
+- Memory cleanup between chunks (prevents OOM)
+- Handles multiple experiment configurations in sequence
+- Validates checkpoints before resuming
+- Retry logic for transient failures
 
-Use `paper_reproduction_cnn.R` for single-process execution.
+### Option 2: Direct Script Execution (Quick Testing)
 
-**⚠️ Note:** Running the full 1000 rounds in a single process on a personal machine may lead to Out-Of-Memory (OOM) errors. Use Quick Mode option to run only a subset of configurations. Use the robust runner for the full table.
+**Use this for:**
+- ✅ Quick testing and debugging
+- ✅ Small experiments (<100 rounds)
+- ✅ Subset of configurations
+- ⚠️ **Not recommended** for full 1000-round experiments (may crash)
 
 ```bash
-# Quick Mode: 1000 rounds, subset of configs for both IID and Non-IID partitions
+# Quick Mode: Subset of configs (E=1,5,20 with B=10)
 FEDAVGR_QUICK=1 Rscript inst/tutorials/paper_reproduction_cnn.R
+
+# Full Mode: All configs (may crash on long runs)
+Rscript inst/tutorials/paper_reproduction_cnn.R
 ```
 
 **Quick Mode Configurations (B=10 only):**
 
-| E (Epochs) | B (Batch Size) | Method |
-| :---: | :---: | :---: |
-| 1 | 10 | FedAvg |
-| 5 | 10 | FedAvg |
-| 20 | 10 | FedAvg |
+| Partition | E (Epochs) | B (Batch Size) | Rounds |
+| :---: | :---: | :---: | :---: |
+| IID | 1, 5, 20 | 10 | 1000 |
+| Non-IID | 1, 5, 20 | 10 | 1000 |
 
-```bash
-# Full Mode: 1000 rounds, all configs
-Rscript inst/tutorials/paper_reproduction_cnn.R
-```
+**⚠️ Warning:** Running 1000 rounds in a single process may cause OOM errors. For production runs, use the **robust runner** (Option 1).
 
 ### 📊 Example Outputs
 
 Results are saved to `inst/reproduction_outputs/`:
 *   **`metrics_mnist.csv`**: Raw logs of every round (accuracy, loss, etc.).
 *   **`figure2_reproduction.png`**: Plot comparing FedAvg vs FedSGD.
-*   **`table2_reproduction.csv`**: Summary table of rounds to reach target accuracy.
 
 ### Figure 2: Test Set Accuracy vs Communication Rounds for MNIST CNN (IID)
 
@@ -107,19 +117,31 @@ Reproduction from McMahan et al. (2017)
 fedavgR/
 ├── R/                          # Core package code
 │   ├── fedavg_simulation.R    # Generic FedAvg framework
-│   ├── server_loop.R          # MNIST-specific wrapper
-│   ├── train_*.R              # Training functions
-│   ├── models_*.R             # Model architectures
-│   ├── partitions.R           # Data partitioning
+│   ├── fedavg.R               # Core aggregation function
+│   ├── train_generic.R        # Generic client training
+│   ├── partitions.R           # Data partitioning utilities
 │   └── ...
 ├── inst/
-│   ├── examples/              # Example scripts
 │   ├── tutorials/             # Paper reproduction scripts
-│   │   ├── paper_reproduction_cnn.R
-│   │   └── paper_reproduction_2nn.R
+│   │   ├── paper_reproduction_cnn.R      # Direct CNN experiments
+│   │   ├── paper_reproduction_2nn.R      # Direct 2NN experiments
+│   │   ├── run_robust_experiments.R      # Robust chunked runner
+│   │   ├── generate_figure2_from_logs.R  # Plot generation
+│   │   ├── generate_table2_from_logs.R   # Table generation
+│   │   └── mnist_helpers/                # MNIST-specific utilities
+│   │       ├── mnist_data.R
+│   │       ├── mnist_models.R
+│   │       ├── mnist_training.R
+│   │       ├── mnist_fedavg.R
+│   │       ├── mnist_partitions.R
+│   │       ├── mnist_plotting.R
+│   │       └── README.md
 │   └── reproduction_outputs/  # Reproduction results
-│       └── metrics_mnist.csv  # Main log file
-├── run_robust_all.R           # Robust experiment runner
+│       ├── metrics_mnist.csv           # Main experiment log
+│       ├── metrics_mnist_B_inf.csv     # B=Inf experiments
+│       ├── figure2_reproduction_*.png  # Generated plots
+│       ├── table2_reproduction.*       # Generated tables
+│       └── checkpoints/                # Experiment checkpoints
 ├── tests/                     # Unit tests
 └── README.md
 ```

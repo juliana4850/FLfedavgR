@@ -15,3 +15,4 @@ reference/
 *_test.R
 *_debug.R
 Rplots.pdf
+temp_chunk_runner.R

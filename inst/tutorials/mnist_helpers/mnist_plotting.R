@@ -352,11 +352,11 @@ plot_flower_style <- function(history,
 #'
 #' @param history Data frame with columns: round, test_acc, partition, E, B
 #' @param target Target accuracy (default: 0.99)
-#' @param smooth_window Window size for moving average smoothing (default: 0, no smoothing).
+#' @param stride Plot every n-th point (default: 50). 1 means plot all points.
 #' @param running_max Logical; if TRUE, plot the best-so-far accuracy (monotonically non-decreasing).
 #' @return A ggplot object
 #' @export
-plot_mnist_figure2 <- function(history, target = 0.99, smooth_window = 0, running_max = FALSE) {
+plot_mnist_figure2 <- function(history, target = 0.99, stride = 50, running_max = FALSE) {
     if (!requireNamespace("ggplot2", quietly = TRUE)) {
         stop("ggplot2 package required.")
     }
@@ -378,14 +378,8 @@ plot_mnist_figure2 <- function(history, target = 0.99, smooth_window = 0, runnin
         df <- do.call(rbind, df_list)
     }
 
-    # Apply smoothing if requested
-    if (smooth_window > 1) {
-        # Simple moving average helper
-        ma <- function(x, n = 5) {
-            stats::filter(x, rep(1 / n, n), sides = 2)
-        }
-
-        # Apply per group
+    # Apply stride subsampling
+    if (stride > 1) {
         if (!"group_id" %in% names(df)) {
             df$group_id <- paste(df$partition, df$E, df$B, df$method)
         }
@@ -393,13 +387,12 @@ plot_mnist_figure2 <- function(history, target = 0.99, smooth_window = 0, runnin
 
         df_list <- lapply(df_list, function(d) {
             d <- d[order(d$round), ]
-            if (nrow(d) >= smooth_window) {
-                d$test_acc <- as.numeric(ma(d$test_acc, n = smooth_window))
-            }
-            d
+            # Keep first, every stride-th, and last point
+            n <- nrow(d)
+            indices <- unique(c(1, seq(stride, n, by = stride), n))
+            d[indices, ]
         })
         df <- do.call(rbind, df_list)
-        df <- df[!is.na(df$test_acc), ] # Remove NA from edges
     }
 
     # Handle B=Inf for display
