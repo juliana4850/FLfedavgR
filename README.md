@@ -1,11 +1,15 @@
 # fedavgR: Federated Learning with Federated Averaging in R
 
-An implementation of **Federated Learning (FL)** using the **Federated Averaging (FedAvg)** algorithm in R using `torch`.
+An implementation of **Federated Learning (FL)** using the **Federated Averaging (FedAvg)** algorithm in R using `torch`. This package is based on the algorithm for FedAvg in *Communication-Efficient Learning of Deep Networks from Decentralized Data* (McMahan et al., 2017), which was the first paper to use the term Federated Learning and the source of the original FederatedAveraging algorithm. 
 
-This package serves two purposes:
-1.  **General Framework**: A flexible simulation framework (`fedavg_simulation` and `fedavg`) to run Federated Learning with Federated Averaging on your own datasets and models.
-2.  **Paper Reproduction**: Example scripts and outputs for reproducing experiments from McMahan et al. (2017) on MNIST and CIFAR-10 datasets.
-3. **GenAI Tutorial**: An educational reference resource for using GenAI tools to generate the code for creating this R package.
+Federated learning (FL) is a well-cited, decentralized approach to machine learning: it was developed to address scenarios where data is generated/stored locally across multiple sources and centralizing that data in one place is not feasible (e.g., due to privacy or large size). For example, individual patient health information is privacy-protected and cannot be freely shared across medical institutions for research purposes. FL uses client-server training loop wherein local data models are updated and model parameters are aggregated to form a global model, and then the global model is sent back to the clients for further updates. In FL, only the model parameters are ever shared between clients and the server, never the data. Federated averaging (FedAvg) is the original model parameter aggregation algorithm, and this package implements it.
+
+Please refer to the original paper for further conceptual and theoretical details on FL, the FedAvg algorithm, models, and experiments implemented in this repository: [https://arxiv.org/abs/1602.05629](https://arxiv.org/abs/1602.05629).
+
+This repository's contents serve three purposes:
+1.  **General Framework**: A flexible simulation framework (`fedavg_simulation` and `fedavg`) to run Federated Learning with Federated Averaging on your own datasets and models. This is the `fedavgR` package.
+2.  **Paper Reproduction**: Example scripts and outputs for reproducing experiments from McMahan et al. (2017) on MNIST and CIFAR-10 datasets. (See `inst/reproduction_outputs/README.md` for more details.)
+3. **GenAI Tutorial**: An educational reference resource on using GenAI tools to generate the code for creating this R package. (See `docs/GENAI_TUTORIAL.md`.)
 
 ## 📦 Installation
 
@@ -23,8 +27,9 @@ You can use `fedavgR` to run federated learning simulations on your own data.
 
 ### 1. Using the Generic Framework
 
-Use `fedavg_simulation()` to run FedAvg with custom models and datasets.
+Use `fedavg_simulation()` to run FedAvg with custom models and datasets. 
 
+For example:
 ```r
 library(torch)
 library(fedavgR)
@@ -101,7 +106,7 @@ print(results$history)
 
 ## 📊 Paper Reproduction
 
-> **⚠️ Important**: To rerun the paper reproduction tutorials, you must **clone this repository**. The tutorials are not intended to be rerun from the installed package.
+> **⚠️ Important**: To rerun the paper reproduction tutorial scripts, you must **clone this repository**. The tutorial scripts are not intended to be rerun from the installed generic `fedavgR` package as they require the custom MNIST and CIFAR-10 code in the `inst/tutorials/` directory.
 
 ### Setup for Paper Reproduction
 
@@ -181,11 +186,11 @@ fedavgR/
 │   │       ├── mnist_logging.R           # Logging utilities
 │   │       └── README.md                 # MNIST-specific helper functions README
 │   └── reproduction_outputs/  # Example reproduction results
-│       ├── metrics_mnist_cnn.csv         # Example MNIST metrics
-│       ├── metrics_cifar10.csv           # Example CIFAR-10 metrics
+│       ├── metrics_mnist_cnn*.csv         # Example MNIST metrics
+│       ├── metrics_cifar10*.csv           # Example CIFAR-10 metrics
 │       ├── figure2_reproduction_*.png    # Example Figure 2 plots
-│       ├── table2_reproduction.*         # Example Table 2
-│       ├── cifar10_final_model.pt        # Example saved model
+│       ├── table2_reproduction*         # Example Table 2
+│       ├── cifar10_final_model*.pt        # Example saved model
 │       └── README.md                     # Reproduction README
 └── README.md                             # Package README
 ```
