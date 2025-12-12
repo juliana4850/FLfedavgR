@@ -119,7 +119,7 @@ cd FLfedavgR
 R -e "devtools::install_local('.', force = TRUE)"
 ```
 
-**Note**: Please refer to `inst/reproduction_outputs/README.md` for full details on how to rerun the paper reproduction experiments. Below, I provide a quick overview of outputs for the MNIST CNN experiments reproduction scripts.
+**Note**: Please refer to [`inst/reproduction_outputs/README.md`](https://github.com/juliana4850/FLfedavgR/blob/af2913920580b8023ac2f899fb0fd927f8ddcb5c/inst/reproduction_outputs/README.md) for full details on how to rerun the paper reproduction experiments. Below, I provide a quick overview of outputs for the MNIST CNN experiments reproduction scripts.
 
 ### 📊 Example Outputs
 
