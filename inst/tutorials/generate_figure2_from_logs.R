@@ -13,22 +13,15 @@ devtools::load_all()
 source("inst/tutorials/mnist_helpers/mnist_plotting.R")
 
 # Paths
-log_file_1 <- "inst/reproduction_outputs/metrics_mnist_B_10_E_1_5.csv"
-log_file_2 <- "inst/reproduction_outputs/metrics_mnist_B_inf.csv"
+log_file <- "inst/reproduction_outputs/metrics_mnist_cnn.csv"
 
 # Load data
-cat(sprintf("Loading %s...\n", log_file_1))
-df1 <- read.csv(log_file_1, stringsAsFactors = FALSE)
-
-cat(sprintf("Loading %s...\n", log_file_2))
-df2 <- read.csv(log_file_2, stringsAsFactors = FALSE)
-
-# Combine
-df_combined <- rbind(df1, df2)
-cat(sprintf("Combined data: %d rows\n", nrow(df_combined)))
+cat(sprintf("Loading %s...\n", log_file))
+df <- read.csv(log_file, stringsAsFactors = FALSE)
+cat(sprintf("Data: %d rows\n", nrow(df)))
 
 # Filter for MNIST CNN
-df_plot <- subset(df_combined, dataset == "MNIST" & model == "CNN")
+df_plot <- subset(df, dataset == "MNIST" & model == "CNN")
 
 # Generate Separate Plots
 cat("Generating IID plot (Running Max)...\n")

@@ -57,6 +57,8 @@ rounds_to_target <- function(history, target = 0.97) {
 #' @param device Device to use ("cpu").
 #' @param fedsgd If TRUE, run FedSGD mode (batch_size=Inf, E=1).
 #' @param log_file Optional path to CSV file for incremental logging. If specified, each round is written immediately after completion.
+#' @param checkpoint_dir Optional directory for checkpointing. If specified, checkpoints are saved after each round.
+#' @param start_round Optional starting round for resuming from a checkpoint.
 #' @return A list containing `history` (data.frame) and `params` (final model parameters).
 #' @export
 run_fedavg_mnist <- function(ds_train, ds_test, labels_train,

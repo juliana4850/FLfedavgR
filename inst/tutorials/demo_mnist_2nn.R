@@ -47,7 +47,7 @@ set.seed(123)
 torch::torch_manual_seed(123)
 
 # Create directories
-dir.create("docs/examples", recursive = TRUE, showWarnings = FALSE)
+dir.create("inst/reproduction_outputs", recursive = TRUE, showWarnings = FALSE)
 dir.create("docs/genai-log", recursive = TRUE, showWarnings = FALSE)
 
 # ============================================================================
@@ -91,9 +91,9 @@ cat(sprintf("  Rounds: %d\n", ROUNDS))
 cat(sprintf("  Clients: %d\n\n", CLIENTS))
 
 # Clear previous metrics
-if (file.exists("inst/reproduction_outputs/metrics_mnist.csv")) {
-    file.remove("inst/reproduction_outputs/metrics_mnist.csv")
-    cat("Removed existing inst/reproduction_outputs/metrics_mnist.csv\n\n")
+if (file.exists("inst/reproduction_outputs/metrics_mnist_2nn.csv")) {
+    file.remove("inst/reproduction_outputs/metrics_mnist_2nn.csv")
+    cat("Removed existing inst/reproduction_outputs/metrics_mnist_2nn.csv\n\n")
 }
 
 # ============================================================================
@@ -151,7 +151,7 @@ run_one <- function(partition_name, B, C) {
                     u = row$u,
                     target = row$target,
                     rounds_to_target = row$rtt,
-                    path = "inst/reproduction_outputs/metrics_mnist.csv"
+                    path = "inst/reproduction_outputs/metrics_mnist_2nn.csv"
                 )
             }
 
@@ -247,8 +247,8 @@ colnames(table_data) <- c("C", "IID (B=∞)", "IID (B=10)", "non-IID (B=∞)", "
 # ============================================================================
 
 # Save CSV
-write.csv(table_data, "docs/examples/mnist_2nn_table.csv", row.names = FALSE)
-cat("Saved: docs/examples/mnist_2nn_table.csv\n")
+write.csv(table_data, "inst/reproduction_outputs/mnist_2nn_table.csv", row.names = FALSE)
+cat("Saved: inst/reproduction_outputs/mnist_2nn_table.csv\n")
 
 # Save Markdown
 md_lines <- c(
@@ -284,8 +284,8 @@ for (i in 1:nrow(table_data)) {
 
 md_lines <- c(md_lines, "", "**Note**: \"—\" indicates target not reached within allocated rounds.")
 
-writeLines(md_lines, "docs/examples/mnist_2nn_table.md")
-cat("Saved: docs/examples/mnist_2nn_table.md\n")
+writeLines(md_lines, "inst/reproduction_outputs/mnist_2nn_table.md")
+cat("Saved: inst/reproduction_outputs/mnist_2nn_table.md\n")
 
 # Print to console
 cat("\n")
@@ -293,16 +293,16 @@ cat(paste(md_lines, collapse = "\n"))
 cat("\n\n")
 
 # Save long-form results
-if (file.exists("inst/reproduction_outputs/metrics_mnist.csv")) {
-    df_long <- read.csv("inst/reproduction_outputs/metrics_mnist.csv", stringsAsFactors = FALSE)
-    write.csv(df_long, "docs/examples/mnist_2nn_results_long.csv", row.names = FALSE)
-    cat(sprintf("Saved: docs/examples/mnist_2nn_results_long.csv (%d rows)\n", nrow(df_long)))
+if (file.exists("inst/reproduction_outputs/metrics_mnist_2nn.csv")) {
+    df_long <- read.csv("inst/reproduction_outputs/metrics_mnist_2nn.csv", stringsAsFactors = FALSE)
+    write.csv(df_long, "inst/reproduction_outputs/mnist_2nn_results_long.csv", row.names = FALSE)
+    cat(sprintf("Saved: inst/reproduction_outputs/mnist_2nn_results_long.csv (%d rows)\n", nrow(df_long)))
 }
 
 # Generate plots
-if (file.exists("inst/reproduction_outputs/metrics_mnist.csv")) {
+if (file.exists("inst/reproduction_outputs/metrics_mnist_2nn.csv")) {
     cat("Generating Table 1...\n")
-    df <- read.csv("inst/reproduction_outputs/metrics_mnist.csv", stringsAsFactors = FALSE)
+    df <- read.csv("inst/reproduction_outputs/metrics_mnist_2nn.csv", stringsAsFactors = FALSE)
     df <- subset(df, model == "2NN" | toupper(model) == "2NN")
 
     if (nrow(df) > 0) {
@@ -324,13 +324,12 @@ if (file.exists("inst/reproduction_outputs/metrics_mnist.csv")) {
 
         save_plot(
             p,
-            out_png = "docs/examples/mnist_2nn_comm_accuracy.png",
-            out_pdf = "docs/examples/mnist_2nn_comm_accuracy.pdf",
+            out_png = "inst/reproduction_outputs/mnist_2nn_comm_accuracy.png",
             width = 12,
             height = 5
         )
 
-        cat("Saved: docs/examples/mnist_2nn_comm_accuracy.{png,pdf}\n")
+        cat("Saved: inst/reproduction_outputs/mnist_2nn_comm_accuracy.png\n")
     }
 }
 
@@ -367,10 +366,10 @@ for (partition_name in c("IID", "nonIID")) {
 log_lines <- c(
     log_lines,
     "### Output Artifacts",
-    "- `docs/examples/mnist_2nn_table.csv`",
-    "- `docs/examples/mnist_2nn_table.md`",
-    "- `docs/examples/mnist_2nn_results_long.csv`",
-    "- `docs/examples/mnist_2nn_comm_accuracy.{png,pdf}`",
+    "- `inst/reproduction_outputs/mnist_2nn_table.csv`",
+    "- `inst/reproduction_outputs/mnist_2nn_table.md`",
+    "- `inst/reproduction_outputs/mnist_2nn_results_long.csv`",
+    "- `inst/reproduction_outputs/mnist_2nn_comm_accuracy.png`",
     ""
 )
 

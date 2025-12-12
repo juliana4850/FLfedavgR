@@ -1,0 +1,11 @@
+# Table 2: Number of communication rounds to reach 99% accuracy
+
+Reproduction from McMahan et al. (2017)
+
+|  CNN   | E  | B  |  u  |    IID     | Non-IID |
+|:------:|:--:|:--:|:---:|:----------:|:-------:|
+| FedSGD | 1  | ∞  |  1  |    702     |   --    |
+| FedAvg | 5  | ∞  |  5  | 230 (3.1×) |   --    |
+| FedAvg | 20 | ∞  | 20  | 128 (5.5×) |   --    |
+| FedAvg | 1  | 10 | 60  | 45 (15.6×) |   89    |
+| FedAvg | 5  | 10 | 300 | 26 (27.0×) |    2    |

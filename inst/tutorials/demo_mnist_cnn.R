@@ -161,7 +161,7 @@ for (i in 1:nrow(experiments)) {
                     seed = 2025 + i * 100 + if (partition_type == "IID") 0 else 50,
                     device = "cpu",
                     fedsgd = (exp$method == "FedSGD"),
-                    log_file = "inst/reproduction_outputs/metrics_mnist.csv"
+                    log_file = "inst/reproduction_outputs/metrics_mnist_cnn.csv"
                 )
             },
             error = function(e) {
@@ -197,6 +197,6 @@ cat("EXPERIMENTS COMPLETE\n")
 cat(strrep("=", 70), "\n\n")
 cat(sprintf("End time: %s\n", Sys.time()))
 cat("\nOutputs:\n")
-cat("  - Raw data: inst/reproduction_outputs/metrics_mnist.csv\n\n")
+cat("  - Raw data: inst/reproduction_outputs/metrics_mnist_cnn.csv\n\n")
 
 invisible(0)

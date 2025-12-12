@@ -13,35 +13,20 @@ library(tidyr)
 library(readr)
 
 # Paths
-log_file_1 <- "inst/reproduction_outputs/metrics_mnist.csv"
-log_file_2 <- "inst/reproduction_outputs/metrics_mnist_B_inf.csv"
+log_file <- "inst/reproduction_outputs/metrics_mnist_cnn.csv"
 output_csv <- "inst/reproduction_outputs/table2_reproduction.csv"
 output_md <- "inst/reproduction_outputs/table2_reproduction.md"
 
 # Load data
-cat(sprintf("Loading %s...\n", log_file_1))
-df1 <- read.csv(log_file_1, stringsAsFactors = FALSE)
-
-cat(sprintf("Loading %s...\n", log_file_2))
-df2 <- read.csv(log_file_2, stringsAsFactors = FALSE)
-
-# Combine
-df_combined <- rbind(df1, df2)
-cat(sprintf("Combined data: %d rows\n", nrow(df_combined)))
+cat(sprintf("Loading %s...\n", log_file))
+df <- read.csv(log_file, stringsAsFactors = FALSE)
+cat(sprintf("Data: %d rows\n", nrow(df)))
 
 # Filter for MNIST CNN
-df_filtered <- subset(df_combined, dataset == "MNIST" & model == "CNN")
+df_filtered <- subset(df, dataset == "MNIST" & model == "CNN")
 
 # Ensure B is numeric for sorting (Inf becomes Inf)
 df_filtered$B_num <- ifelse(df_filtered$B == "Inf", Inf, as.numeric(df_filtered$B))
-
-# Get final rounds-to-target for each configuration
-# We group by partition, E, B, method.
-# We take the minimum non-NA rounds_to_target, or NA if never reached.
-# Actually, the log records rounds_to_target at every step once reached?
-# Or we can just take the value from the last round?
-# Let's look at the data: rounds_to_target is likely NA until reached, then the round number.
-# So we want the minimum non-NA value.
 
 table2_data <- df_filtered %>%
     group_by(partition, method, E, B_num) %>%

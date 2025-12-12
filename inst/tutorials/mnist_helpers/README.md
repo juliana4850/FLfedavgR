@@ -75,10 +75,10 @@ The paper reproduction scripts automatically source these helpers:
 
 ```r
 # Run CNN experiments (IID and Non-IID)
-Rscript inst/tutorials/paper_reproduction_cnn.R
+Rscript inst/tutorials/demo_mnist_cnn.R
 
 # Run 2NN experiments
-Rscript inst/tutorials/paper_reproduction_2nn.R
+Rscript inst/tutorials/demo_mnist_2nn.R
 ```
 
 ### Direct Usage
@@ -105,7 +105,7 @@ result <- run_fedavg_mnist(
     ds_test = ds_test,
     labels_train = labels_train,
     model_fn = "cnn",           # or "2nn"
-    partition = "nonIID",       # or "IID"
+    partition = "IID",       # or "nonIID"
     K = 100,                    # Number of clients
     C = 0.1,                    # Fraction selected per round
     E = 5,                      # Local epochs
@@ -113,9 +113,9 @@ result <- run_fedavg_mnist(
     lr_grid = c(0.03, 0.1),     # Learning rate grid search
     target = 0.99,              # Target accuracy for RTT
     rounds = 1000,              # Communication rounds
-    seed = 123,
+    seed = 2025,
     log_file = "metrics.csv",   # Optional: incremental logging
-    checkpoint_dir = "ckpts"    # Optional: checkpointing
+    checkpoint_dir = "checkpoints"    # Optional: checkpointing
 )
 
 # Access results

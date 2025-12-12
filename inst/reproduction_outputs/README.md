@@ -1,43 +1,43 @@
 # Paper Reproduction Outputs
 
-This directory contains outputs from reproducing McMahan et al. (2017) results using the fedavgR package.
-
-## Contents
-
-### MNIST Paper Reproduction Outputs
-
-This directory contains the outputs from reproducing components of Figure 2 and Table 2 from McMahan et al. (2017).
+This directory contains outputs from reproducing McMahan et al. (2017) MNIST CNN and CIFAR-10 experiment results using the fedavgR package.
 
 ## Files
 
-- **`figure2_reproduction_{IID|nonIID}.png`** - Reproduction of Figure 2 (test accuracy vs communication rounds)
-- **`table2_reproduction.md`** - Reproduction of Table 2 (rounds to 99% accuracy with speedups)
-- **`metrics_mnist.csv`** - Raw metrics data from reproduction experiments
+- **`metrics_mnist_cnn.csv`** - Example raw metrics data from reproduction of subset of MNIST CNN experiments
+- **`figure2_reproduction_{IID | nonIID}.png`** - Example reproduction of Figure 2 (test accuracy vs communication rounds) using `metrics_mnist_cnn.csv`
+- **`table2_reproduction.{md | csv}`** - Example reproduction of Table 2 (rounds to 99% accuracy with speedups) using `metrics_mnist_cnn.csv`
 
-## Key Results
+- **`metrics_cifar10_lr15.csv`** - Example raw metrics data from reproduction of CIFAR-10 FedAvg experiment with learning rate 0.15
+- **`cifar10_lr15_final_model.pt`** - Example final model from reproduction of CIFAR-10 FedAvg experiment with learning rate 0.15
 
-From the completed IID experiments:
 
-| Method | E  | Rounds to 99% | Speedup vs FedSGD |
-|--------|----|--------------:|------------------:|
-| FedSGD | 1  | 702           | 1.0× (baseline)   |
-| FedAvg | 5  | 229           | **3.1×**          |
-| FedAvg | 20 | 128           | **5.5×**          |
+## Reproducing MNIST and CIFAR-10 Experiments
 
-**Conclusion**: FedAvg with more local epochs (E=20) achieves significant communication efficiency gains, reaching 99% accuracy in 5.5× fewer rounds than FedSGD.
+**Note**: The full reproductions of both MNIST and CIFAR-10 experiments require significant computational resources and is not recommended for same-day results.  
 
-## Reproducing These Results
-
-To reproduce:
+### To reproduce:
 
 ```r
-# Run the paper reproduction script
-Rscript inst/tutorials/paper_reproduction_cnn.R
-# Run a subset of the experiments
-FEDAVGR_QUICK=1 Rscript inst/tutorials/paper_reproduction_cnn.R
+# Run the MNIST CNN experiment reproduction script
+Rscript inst/tutorials/demo_mnist_cnn.R
+## OR
+# Run a subset of the MNIST CNN experiments
+FEDAVGR_QUICK=1 Rscript inst/tutorials/demo_mnist_cnn.R
+
+# Generate figure 2 from logs
+Rscript inst/tutorials/generate_figure2_from_logs.R
+# Generate table 2 from logs
+Rscript inst/tutorials/generate_table2_from_logs.R
 ```
 
-**Note**: The full reproduction requires significant computational resources and is not recommended for same-day results.
+## Reproducing CIFAR-10 Experiments
+
+```r
+# Run the CIFAR-10 experiment reproduction script
+# Example: Run for 2000 rounds with learning rate 0.15
+LR=0.15 ROUNDS=2000 LOG_FILE=inst/reproduction_outputs/metrics_cifar10_lr15.csv MODEL_FILE=inst/reproduction_outputs/cifar10_lr15_final_model.pt Rscript inst/tutorials/demo_cifar10.R
+```
 
 ## Reference
 
