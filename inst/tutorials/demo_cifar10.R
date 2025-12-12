@@ -182,7 +182,7 @@ cat("  Evaluation function defined\n\n")
 
 # Configuration
 LR <- as.numeric(Sys.getenv("LR", "0.15"))
-ROUNDS <- as.integer(Sys.getenv("ROUNDS", "10"))
+ROUNDS <- as.integer(Sys.getenv("ROUNDS", "3000"))
 LOG_FILE <- Sys.getenv("LOG_FILE", "inst/reproduction_outputs/metrics_cifar10.csv")
 MODEL_FILE <- Sys.getenv("MODEL_FILE", "inst/reproduction_outputs/cifar10_final_model.pt")
 

@@ -13,9 +13,9 @@ library(tidyr)
 library(readr)
 
 # Paths
-log_file <- "inst/reproduction_outputs/metrics_mnist_cnn.csv"
-output_csv <- "inst/reproduction_outputs/table2_reproduction.csv"
-output_md <- "inst/reproduction_outputs/table2_reproduction.md"
+log_file <- Sys.getenv("LOG_FILE", "inst/reproduction_outputs/metrics_mnist_cnn.csv")
+output_csv <- Sys.getenv("OUTPUT_CSV", "inst/reproduction_outputs/table2_reproduction.csv")
+output_md <- Sys.getenv("OUTPUT_MD", "inst/reproduction_outputs/table2_reproduction.md")
 
 # Load data
 cat(sprintf("Loading %s...\n", log_file))

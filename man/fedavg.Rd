@@ -2,18 +2,44 @@
 % Please edit documentation in R/fedavg.R
 \name{fedavg}
 \alias{fedavg}
-\title{Federated Averaging Aggregation}
+\title{Federated Averaging (FedAvg)}
 \usage{
-fedavg(params_list, weights)
+fedavg(params, weights)
 }
 \arguments{
-\item{params_list}{A list of flattened parameter vectors from clients.}
+\item{params}{A list of numeric vectors of equal length. Each vector represents the model
+parameters from a single client.}
 
-\item{weights}{A numeric vector of weights (usually number of samples).}
+\item{weights}{A numeric vector of non-negative weights (e.g., number of
+samples \code{n_k}) corresponding to each client in \code{params}.}
 }
 \value{
-A single flattened parameter vector.
+A numeric vector representing the aggregated model parameters (\verb{w_\{t+1\}}).
 }
 \description{
-Aggregates client updates using weighted averaging.
+Aggregates client model parameters using the Federated Averaging algorithm
+as described by McMahan et al. (2017). The aggregation is a weighted
+average of the client parameters, where the weights are typically the
+number of samples on each client.
+
+The formula is: \eqn{w_{t+1} = \sum_k (n_k / \sum_j n_j)\, w^{(k)}_{t+1}}
+}
+\examples{
+# Example with two clients
+client1_params <- c(0.1, 0.2, 0.3)
+client2_params <- c(0.4, 0.5, 0.6)
+client_params <- list(client1_params, client2_params)
+
+# Weights are the number of data samples on each client
+client_samples <- c(100, 200)
+
+aggregated_params <- fedavg(client_params, client_samples)
+print(aggregated_params)
+# Expected: (100 * c(0.1, 0.2, 0.3) + 200 * c(0.4, 0.5, 0.6)) / 300
+}
+\references{
+McMahan, B., Moore, E., Ramage, D., Hampson, S., & y Arcas, B. A. (2017).
+Communication-Efficient Learning of Deep Networks from Decentralized Data.
+\emph{Proceedings of the 20th International Conference on Artificial Intelligence
+and Statistics (AISTATS)}.
 }

@@ -1,115 +1,20 @@
-# fedavgR: Federated Learning with Federated Averaging in R
+# FLfedavgR: Federated Learning with Federated Averaging in R
 
 An implementation of **Federated Learning (FL)** using the **Federated Averaging (FedAvg)** algorithm in R using `torch`.
 
 This package serves two purposes:
-1.  **Paper Reproduction**: Exact reproduction of experiments from McMahan et al. (2017) on MNIST (IID and Non-IID).
-2.  **General Framework**: A flexible simulation framework (`fedavg_simulation`) to run FedAvg on your own datasets and models.
+1.  **General Framework**: A flexible simulation framework (`fedavg_simulation` and `fedavg`) to run Federated Learning with Federated Averaging on your own datasets and models.
+2.  **Paper Reproduction**: Example scripts and outputs for reproducing experiments from McMahan et al. (2017) on MNIST and CIFAR-10 datasets.
+3. **GenAI Tool Usage Framework**: A general framework for using GenAI tools to generate the code for creating this R package.
 
 ## 📦 Installation
 
-This package requires `torch` and `torchvision`.
-
+### From GitHub
 ```r
-# 1. Install dependencies
-install.packages(c("torch", "torchvision", "devtools", "ggplot2", "dplyr", "readr", "tidyr", "remotes"))
-
-# 2. Install Torch (downloads libtorch)
-torch::install_torch()
-
-# 3. Install fedavgR
-# Run this from the root of the repository
-remotes::install_local(".", force = TRUE)
-```
-
-## 📊 Paper Reproduction
-
-To reproduce the McMahan et al. (2017) MNIST CNN experiments:
-
-```bash
-# Quick Mode: Subset of configs (E=1,5,20 with B=Inf only)
-FEDAVGR_QUICK=1 Rscript inst/tutorials/paper_reproduction_cnn.R
-
-# Full Mode: All configs (E=1,5,20 with B=10,50,Inf)
-Rscript inst/tutorials/paper_reproduction_cnn.R
-```
-
-**Quick Mode Configurations:**
-
-| Partition | E (Epochs) | B (Batch Size) | Rounds |
-| :---: | :---: | :---: | :---: |
-| IID | 1, 5, 20 | ∞ | 1000 |
-| Non-IID | 1, 5, 20 | ∞ | 1000 |
-
-**Full Mode:** Runs all 9 configurations (3 E values × 3 B values) for both IID and Non-IID partitions.
-
-### 📊 Example Outputs
-
-Results are saved to `inst/reproduction_outputs/`:
-*   **`metrics_mnist.csv`**: Raw logs of every round (accuracy, loss, etc.).
-*   **`figure2_reproduction.png`**: Plot comparing FedAvg vs FedSGD.
-
-### Figure 2: Test Set Accuracy vs Communication Rounds for MNIST CNN (IID)
-
-<table>
-  <tr>
-    <td><img src="inst/reproduction_outputs/figure2_reproduction_IID.png" alt="MNIST accuracy vs rounds (reproduction)" width="465"></td>
-    <td><img src="inst/reproduction_outputs/figure2_mcmahan_et_al_2017_IID.png" alt="MNIST accuracy vs rounds (paper)" width="400"></td>
-  </tr>
-  <tr>
-    <td align="center"><em>Reproduction of Figure 2</em></td>
-    <td align="center"><em>McMahan et al. (2017) Figure 2</em></td>
-  </tr>
-</table>
-
-### Table 2: Communication Rounds to 99% Test Accuracy
-
-Reproduction from McMahan et al. (2017)
-
-|  CNN   | E  | B  |  u  |    IID (Reproduction)     | IID (McMahan et al. (2017)) |
-|:------:|:--:|:--:|:---:|:----------:|:-------:|
-| FedSGD | 1  | ∞  | 1 |    702     |   626    |
-| FedAvg | 5  | ∞  | 5 | 230 (3.1×) |   179 (3.5x)    |
-| FedAvg | 20 | ∞  | 20 | 128 (5.5×) |   234 (2.7x)    |
-| FedAvg | 1  | 10 | 60 | 45 (15.6×) |   34 (18.4x)    |
-| FedAvg | 5  | 10 | 300 | 26 (27.0×) |    20 (31.3x)     |
-
-
-**Note**: Values show rounds to target (speedup vs FedSGD baseline).
-
-## 📁 Repository Structure
-
-```
-fedavgR/
-├── R/                          # Core package code
-│   ├── fedavg_simulation.R    # Generic FedAvg framework
-│   ├── fedavg.R               # Core aggregation function
-│   ├── train_generic.R        # Generic client training
-│   ├── partitions.R           # Data partitioning utilities
-│   └── ...
-├── inst/
-│   ├── tutorials/             # Paper reproduction scripts
-│   │   ├── paper_reproduction_cnn.R      # Direct CNN experiments
-│   │   ├── paper_reproduction_2nn.R      # Direct 2NN experiments
-│   │   ├── run_robust_experiments.R      # Robust chunked runner
-│   │   ├── generate_figure2_from_logs.R  # Plot generation
-│   │   ├── generate_table2_from_logs.R   # Table generation
-│   │   └── mnist_helpers/                # MNIST-specific utilities
-│   │       ├── mnist_data.R
-│   │       ├── mnist_models.R
-│   │       ├── mnist_training.R
-│   │       ├── mnist_fedavg.R
-│   │       ├── mnist_partitions.R
-│   │       ├── mnist_plotting.R
-│   │       └── README.md
-│   └── reproduction_outputs/  # Reproduction results
-│       ├── metrics_mnist.csv           # Main experiment log
-│       ├── metrics_mnist_B_inf.csv     # B=Inf experiments
-│       ├── figure2_reproduction_*.png  # Generated plots
-│       ├── table2_reproduction.*       # Generated tables
-│       └── checkpoints/                # Experiment checkpoints
-├── tests/                     # Unit tests
-└── README.md
+# Install devtools if you haven't already
+install.packages("devtools")
+# Install fedavgR from GitHub
+devtools::install_github("juliana4850/FLfedavgR")
 ```
 
 ## 🚀 General Usage
@@ -160,30 +65,95 @@ results <- fedavg_simulation(
 print(results$history)
 ```
 
-### 2. Using the MNIST Wrapper
+## 📊 Paper Reproduction
 
-For quick experiments on MNIST, use the built-in wrapper:
+> **⚠️ Important**: To run the paper reproduction tutorials, you must **clone this repository**. The tutorials are not intended to be rerun from the installed package.
 
-```r
-# Load Data
-ds_train <- mnist_ds(root = "data", train = TRUE, download = TRUE)
-ds_test <- mnist_ds(root = "data", train = FALSE, download = TRUE)
-labels <- mnist_labels(ds_train)
+### Setup for Paper Reproduction
 
-# Run FedAvg
-res <- run_fedavg_mnist(
-  ds_train = ds_train,
-  ds_test = ds_test,
-  labels_train = labels,
-  model_fn = "cnn",       # "cnn" or "2nn"
-  partition = "nonIID",   # "IID" or "nonIID"
-  K = 100,                # Total clients
-  C = 0.1,                # Fraction selected (0.1 = 10 clients)
-  E = 5,                  # Local epochs
-  batch_size = 50,        # Local batch size (Inf for FedSGD)
-  lr_grid = c(0.01, 0.05, 0.1), # LR selection grid
-  rounds = 100
-)
+```bash
+# Clone the repository
+git clone https://github.com/juliana4850/FLfedavgR.git
+cd FLfedavgR
+
+# Install the package in development mode
+R -e "devtools::install_local('.', force = TRUE)"
+```
+
+**Note**: Please refer to `inst/reproduction_outputs/README.md` for full details on the paper reproduction experiments. Below, we provide a quick example of outputs for the MNIST CNN experiments reproduction.
+
+### 📊 Example Outputs
+
+**Note**: Due to randomization in the data partitioning and model training process, the exact outputs WILL vary from the paper and between runs. These example outputs are provided for reference.
+
+Example results are saved to `inst/reproduction_outputs/`:
+*   **`metrics_mnist_cnn.csv`**: Raw logs of every round (accuracy, loss, etc.).
+*   **`figure2_reproduction_IID.png`**: Plot comparing FedAvg vs FedSGD for IID partition.
+
+### Figure 2: Test Set Accuracy vs Communication Rounds for MNIST CNN (IID)
+
+<table>
+  <tr>
+    <td><img src="inst/reproduction_outputs/figure2_reproduction_IID.png" alt="MNIST accuracy vs rounds (example reproduction)" width="465"></td>
+    <td><img src="inst/reproduction_outputs/figure2_mcmahan_et_al_2017_IID.png" alt="MNIST accuracy vs rounds (paper)" width="400"></td>
+  </tr>
+  <tr>
+    <td align="center"><em>Example reproduction of Figure 2</em></td>
+    <td align="center"><em>McMahan et al. (2017) Figure 2</em></td>
+  </tr>
+</table>
+
+### Table 2: Communication Rounds to 99% Test Accuracy
+
+Example Reproduction vs McMahan et al. (2017)
+
+|  CNN   | E  | B  |  u  |    IID (Reproduction)     | IID (McMahan et al. (2017)) |
+|:------:|:--:|:--:|:---:|:----------:|:-------:|
+| FedSGD | 1  | ∞  | 1 |    702     |   626    |
+| FedAvg | 5  | ∞  | 5 | 230 (3.1×) |   179 (3.5x)    |
+| FedAvg | 20 | ∞  | 20 | 128 (5.5×) |   234 (2.7x)    |
+| FedAvg | 1  | 10 | 60 | 45 (15.6×) |   34 (18.4x)    |
+| FedAvg | 5  | 10 | 300 | 26 (27.0×) |    20 (31.3x)     |
+
+
+**Note**: Values show rounds to target (speedup vs FedSGD baseline).
+
+## 📁 Repository Structure
+
+```
+fedavgR/
+├── R/                          # Core package code
+│   ├── fedavg_simulation.R    # Generic FL with FedAvg framework
+│   ├── fedavg.R               # Core aggregation function
+│   ├── client_train.R         # Generic client training
+│   ├── partitions.R           # Generic data partitioning utilities
+│   ├── data_helpers.R         # Generic data helper functions
+│   ├── parameters.R           # Generic parameter helper functions
+│   ├── utils.R                # Generic utilities
+│   └── ...
+├── inst/
+│   ├── tutorials/             # Demonstration reproduction scripts
+│   │   ├── demo_mnist_cnn.R              # MNIST CNN reproduction
+│   │   ├── demo_cifar10.R                # CIFAR-10 reproduction
+│   │   ├── generate_figure2_from_logs.R  # Figure 2 plot generation
+│   │   ├── generate_table2_from_logs.R   # Table 2 generation
+│   │   └── mnist_helpers/                # MNIST-specific helper functions
+│   │       ├── mnist_data.R              # Data loading
+│   │       ├── mnist_models.R            # Model architectures
+│   │       ├── mnist_training.R          # Training functions
+│   │       ├── mnist_fedavg.R            # FedAvg wrapper
+│   │       ├── mnist_partitions.R        # Data partitioning
+│   │       ├── mnist_plotting.R          # Plotting utilities
+│   │       ├── mnist_logging.R           # Logging utilities
+│   │       └── README.md                 # MNIST-specific helper functions README
+│   └── reproduction_outputs/  # Example reproduction results
+│       ├── metrics_mnist_cnn.csv         # Example MNIST metrics
+│       ├── metrics_cifar10.csv           # Example CIFAR-10 metrics
+│       ├── figure2_reproduction_*.png    # Example Figure 2 plots
+│       ├── table2_reproduction.*         # Example Table 2
+│       ├── cifar10_final_model.pt        # Example saved model
+│       └── README.md                     # Reproduction README
+└── README.md                             # Package README
 ```
 
 ## 📚 Reference

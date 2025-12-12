@@ -80,9 +80,15 @@ experiments_full <- data.frame(
     stringsAsFactors = FALSE
 )
 
-# Quick mode: reduced set (E ∈ {1,5,20}, B=10 only)
-# Configs: 5 (E=1), 8 (E=5), 9 (E=20) - all with B=10
-experiments_quick <- experiments_full[experiments_full$B == 10, ]
+# Quick mode: reduced set (E ∈ {1,5}, B ∈ {10,Inf})
+experiments_quick <- data.frame(
+    config_id = c(1, 2, 5, 8),
+    E = c(1, 5, 1, 5),
+    B = c(Inf, Inf, 10, 10),
+    u = c(1, 5, 60, 300),
+    method = c("FedSGD", rep("FedAvg", 3)),
+    stringsAsFactors = FALSE
+)
 
 # Select experiment set based on mode
 experiments <- if (Sys.getenv("FEDAVGR_QUICK", "0") == "1") experiments_quick else experiments_full

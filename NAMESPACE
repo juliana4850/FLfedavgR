@@ -2,7 +2,6 @@
 
 export(client_train_generic)
 export(dataset_subset)
-export(eval_mnist_accuracy)
 export(fedavg)
 export(fedavg_simulation)
 export(flatten_params)

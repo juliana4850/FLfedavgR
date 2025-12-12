@@ -15,7 +15,9 @@ fedavg_simulation(
   optimizer_generator = function(lr) function(p) torch::optim_sgd(p, lr = lr),
   lr_scheduler = function(r) 0.1,
   seed = 123,
-  device = "cpu"
+  device = "cpu",
+  log_file = NULL,
+  save_model = NULL
 )
 }
 \arguments{
@@ -40,9 +42,13 @@ fedavg_simulation(
 \item{seed}{Random seed.}
 
 \item{device}{Device to use ("cpu" or "cuda").}
+
+\item{log_file}{Optional path to CSV file for incremental logging of metrics.}
+
+\item{save_model}{Optional path to save the final trained model (e.g., "model.pt"). If NULL, model is not saved.}
 }
 \value{
-A list containing \code{history} (data.frame) and \code{final_params}.
+A list containing \code{history} (data.frame), \code{final_params}, and \code{final_model} (if save_model is specified).
 }
 \description{
 Runs a Federated Averaging simulation on a generic dataset.
