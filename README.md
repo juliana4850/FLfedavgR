@@ -101,7 +101,7 @@ print(results$history)
 
 ## 📊 Paper Reproduction
 
-> **⚠️ Important**: To run the paper reproduction tutorials, you must **clone this repository**. The tutorials are not intended to be rerun from the installed package.
+> **⚠️ Important**: To rerun the paper reproduction tutorials, you must **clone this repository**. The tutorials are not intended to be rerun from the installed package.
 
 ### Setup for Paper Reproduction
 
@@ -114,11 +114,11 @@ cd FLfedavgR
 R -e "devtools::install_local('.', force = TRUE)"
 ```
 
-**Note**: Please refer to `inst/reproduction_outputs/README.md` for full details on the paper reproduction experiments. Below, we provide a quick example of outputs for the MNIST CNN experiments reproduction.
+**Note**: Please refer to `inst/reproduction_outputs/README.md` for full details on how to rerun the paper reproduction experiments. Below, I provide a quick overview of outputs for the MNIST CNN experiments reproduction scripts.
 
 ### 📊 Example Outputs
 
-**Note**: Due to randomization in the data partitioning and model training process, the exact outputs WILL vary from the paper and between runs. These example outputs are provided for reference.
+> **Note**: Due to randomization in the data partitioning and model training process, the reproduction outputs WILL vary from the paper and between runs. These example outputs are provided for reference.
 
 Example results are saved to `inst/reproduction_outputs/`:
 *   **`metrics_mnist_cnn.csv`**: Raw logs of every round (accuracy, loss, etc.).
