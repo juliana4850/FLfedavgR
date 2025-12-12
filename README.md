@@ -8,8 +8,8 @@ Please refer to the original paper for further conceptual and theoretical detail
 
 This repository's contents serve three purposes:
 1.  **General Framework**: A flexible simulation framework (`fedavg_simulation` and `fedavg`) to run Federated Learning with Federated Averaging on your own datasets and models. This is the `fedavgR` package.
-2.  **Paper Reproduction**: Example scripts and outputs for reproducing experiments from McMahan et al. (2017) on MNIST and CIFAR-10 datasets. (See `inst/reproduction_outputs/README.md` for more details.)
-3. **GenAI Tutorial**: An educational reference resource on using GenAI tools to generate the code for creating this R package. (See `docs/GENAI_TUTORIAL.md`.)
+2.  **Paper Reproduction**: Example scripts and outputs for reproducing experiments from McMahan et al. (2017) on MNIST and CIFAR-10 datasets. (See [`inst/reproduction_outputs/README.md`](https://github.com/juliana4850/FLfedavgR/blob/af2913920580b8023ac2f899fb0fd927f8ddcb5c/inst/reproduction_outputs/README.md) for more details.)
+3. **GenAI Tutorial**: An educational reference resource on using GenAI tools to generate the code for creating this R package. (See [`docs/GENAI_TUTORIAL.md`](https://github.com/juliana4850/FLfedavgR/blob/af2913920580b8023ac2f899fb0fd927f8ddcb5c/docs/GENAI_TUTORIAL.md).)
 
 ## 📦 Installation
 
