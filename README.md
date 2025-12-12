@@ -1,11 +1,11 @@
-# FLfedavgR: Federated Learning with Federated Averaging in R
+# fedavgR: Federated Learning with Federated Averaging in R
 
 An implementation of **Federated Learning (FL)** using the **Federated Averaging (FedAvg)** algorithm in R using `torch`.
 
 This package serves two purposes:
 1.  **General Framework**: A flexible simulation framework (`fedavg_simulation` and `fedavg`) to run Federated Learning with Federated Averaging on your own datasets and models.
 2.  **Paper Reproduction**: Example scripts and outputs for reproducing experiments from McMahan et al. (2017) on MNIST and CIFAR-10 datasets.
-3. **GenAI Tool Usage Framework**: A general framework for using GenAI tools to generate the code for creating this R package.
+3. **GenAI Tutorial**: An educational reference resource for using GenAI tools to generate the code for creating this R package.
 
 ## 📦 Installation
 
@@ -26,40 +26,74 @@ You can use `fedavgR` to run federated learning simulations on your own data.
 Use `fedavg_simulation()` to run FedAvg with custom models and datasets.
 
 ```r
-library(fedavgR)
 library(torch)
+library(fedavgR)
 
 # 1. Define your model generator
 model_gen <- function() {
   nn_sequential(
     nn_linear(10, 20),
     nn_relu(),
-    nn_linear(20, 1)
+    nn_linear(20, 2)
   )
 }
 
 # 2. Prepare client datasets (list of torch datasets)
-# Example: 10 clients with random data
-clients <- lapply(1:10, function(i) {
-  tensor_dataset(torch_randn(100, 10), torch_randn(100, 1))
+make_classif_dataset <- function(n, p, margin = 1.0) {
+  w <- torch_randn(p)
+  x <- torch_randn(n, p)
+  score <- x$matmul(w) + 0.5 * torch_randn(n)
+  # R torch: class indices must start at 1
+  y01 <- (score > margin)$to(dtype = torch_long())       
+  y   <- (y01 + 1L)$to(dtype = torch_long())             
+  
+  dataset(
+    name = "toy_cls",
+    initialize = function() { self$x <- x; self$y <- y },
+    .getitem   = function(i) { list(self$x[i, ], self$y[i]) },
+    .length    = function() self$x$size()[1]
+  )()
+}
+K <- 10L
+p <- 10L
+clients <- lapply(seq_len(K), function(i) {
+  make_classif_dataset(n = sample(80:120, 1), p = p)
 })
 
 # 3. Define evaluation function
-eval_fn <- function(model, device) {
+val_ds <- make_classif_dataset(n = 512, p = p)
+evaluation_fn <- function(model, device = if (cuda_is_available()) "cuda" else "cpu") {
   model$eval()
-  # ... compute metrics ...
-  list(loss = 0.5) # Return named list
+  dl <- dataloader(val_ds, batch_size = 256, shuffle = FALSE)
+  correct <- 0
+  total <- 0
+  coro::loop(for (b in dl) {
+    x <- b[[1]]$to(device = device)
+    y <- b[[2]]$to(device = device)                  
+    with_no_grad({
+      logits <- model(x)
+      pred <- torch_argmax(logits, dim = 2)
+    })
+    correct <- correct + as.numeric((pred == y)$sum()$cpu())
+    total   <- total   + length(y)
+  })
+  list(acc = correct / total)
 }
 
 # 4. Run Simulation
 results <- fedavg_simulation(
-  client_datasets = clients,
-  model_generator = model_gen,
-  evaluation_fn = eval_fn,
-  rounds = 50,
-  C = 0.1,    # Select 10% of clients per round
-  E = 5,      # 5 local epochs
-  batch_size = 32
+  client_datasets   = clients,
+  model_generator   = model_gen,
+  evaluation_fn     = evaluation_fn,
+  rounds            = 5,
+  C                 = 0.3,      # ~30% clients per round
+  E                 = 1,        # 1 local epoch
+  batch_size        = 32,
+  optimizer_generator = function(lr) function(p) optim_sgd(p, lr = lr, momentum = 0),
+  lr_scheduler      = function(r) 0.05,
+  seed              = 123,
+  device            = if (cuda_is_available()) "cuda" else "cpu",
+  log_file          = NULL
 )
 
 print(results$history)

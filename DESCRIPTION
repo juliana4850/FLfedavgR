@@ -1,8 +1,8 @@
 Package: fedavgR
-Title: Federated Averaging on MNIST
+Title: Federated Learning with Federated Averaging in R
 Version: 0.1.0
-Authors@R: person("Antigravity", role = c("aut", "cre"), email = "antigravity@example.com")
-Description: Re-implementation of the FedAvg MNIST experiment (McMahan et al., 2017) using torch.
+Authors@R: person("Juliana Tu", role = c("aut", "cre"), email = "tuj@umich.edu")
+Description: Re-implementation of the FedAvg MNIST and CIFAR-10 experiments (McMahan et al., 2017) using torch.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -12,8 +12,14 @@ Imports:
     torch,
     torchvision,
     coro,
-    methods
+    methods,
+    dplyr,
+    readr
 Suggests: 
     testthat,
     devtools,
-    usethis
+    usethis,
+    ggplot2,
+    tidyr,
+    scales,
+    svglite
