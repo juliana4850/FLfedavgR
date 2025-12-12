@@ -13,7 +13,9 @@
 #' @param lr_scheduler A function(round) that returns the learning rate for that round.
 #' @param seed Random seed.
 #' @param device Device to use ("cpu" or "cuda").
-#' @return A list containing `history` (data.frame) and `final_params`.
+#' @param log_file Optional path to CSV file for incremental logging of metrics.
+#' @param save_model Optional path to save the final trained model (e.g., "model.pt"). If NULL, model is not saved.
+#' @return A list containing `history` (data.frame), `final_params`, and `final_model` (if save_model is specified).
 #' @export
 fedavg_simulation <- function(client_datasets,
                               model_generator,
@@ -26,7 +28,8 @@ fedavg_simulation <- function(client_datasets,
                               lr_scheduler = function(r) 0.1,
                               seed = 123,
                               device = "cpu",
-                              log_file = NULL) {
+                              log_file = NULL,
+                              save_model = NULL) {
     if (!is.null(seed)) {
         set.seed(seed)
         torch::torch_manual_seed(seed)
@@ -123,8 +126,29 @@ fedavg_simulation <- function(client_datasets,
         gc()
     }
 
-    list(
+    # Save model if requested
+    if (!is.null(save_model)) {
+        # Create directory if it doesn't exist
+        save_dir <- dirname(save_model)
+        if (!dir.exists(save_dir) && save_dir != ".") {
+            dir.create(save_dir, recursive = TRUE, showWarnings = FALSE)
+        }
+
+        # Save the final model
+        torch::torch_save(global_model, save_model)
+        cat(sprintf("Model saved to: %s\n", save_model))
+    }
+
+    result <- list(
         history = dplyr::bind_rows(history),
         final_params = global_params
     )
+
+    # Include final model in result if it was saved
+    if (!is.null(save_model)) {
+        result$final_model <- global_model
+        result$model_path <- save_model
+    }
+
+    result
 }

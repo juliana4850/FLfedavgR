@@ -24,58 +24,24 @@ remotes::install_local(".", force = TRUE)
 
 ## 📊 Paper Reproduction
 
-There are **two ways** to reproduce the paper results, depending on your needs:
-
-### Option 1: Robust Runner (Recommended for Full Reproduction)
-
-**Use this for:**
-- ✅ Full paper reproduction (all 1000 rounds)
-- ✅ Unattended overnight/weekend runs
-- ✅ Limited memory environments
-- ✅ Production/final runs
-
-The robust runner executes experiments in **50-round chunks** with automatic checkpointing and memory cleanup between chunks. This prevents OOM crashes and allows safe resumption if interrupted.
+To reproduce the McMahan et al. (2017) MNIST CNN experiments:
 
 ```bash
-# Run all experiments in background
-nohup Rscript inst/tutorials/run_robust_experiments.R > robust.log 2>&1 &
-
-# Monitor progress
-tail -f robust.log
-tail -f inst/reproduction_outputs/metrics_mnist.csv
-```
-
-**Features:**
-- Automatic checkpoint saving and resume
-- Memory cleanup between chunks (prevents OOM)
-- Handles multiple experiment configurations in sequence
-- Validates checkpoints before resuming
-- Retry logic for transient failures
-
-### Option 2: Direct Script Execution (Quick Testing)
-
-**Use this for:**
-- ✅ Quick testing and debugging
-- ✅ Small experiments (<100 rounds)
-- ✅ Subset of configurations
-- ⚠️ **Not recommended** for full 1000-round experiments (may crash)
-
-```bash
-# Quick Mode: Subset of configs (E=1,5,20 with B=10)
+# Quick Mode: Subset of configs (E=1,5,20 with B=Inf only)
 FEDAVGR_QUICK=1 Rscript inst/tutorials/paper_reproduction_cnn.R
 
-# Full Mode: All configs (may crash on long runs)
+# Full Mode: All configs (E=1,5,20 with B=10,50,Inf)
 Rscript inst/tutorials/paper_reproduction_cnn.R
 ```
 
-**Quick Mode Configurations (B=10 only):**
+**Quick Mode Configurations:**
 
 | Partition | E (Epochs) | B (Batch Size) | Rounds |
 | :---: | :---: | :---: | :---: |
-| IID | 1, 5, 20 | 10 | 1000 |
-| Non-IID | 1, 5, 20 | 10 | 1000 |
+| IID | 1, 5, 20 | ∞ | 1000 |
+| Non-IID | 1, 5, 20 | ∞ | 1000 |
 
-**⚠️ Warning:** Running 1000 rounds in a single process may cause OOM errors. For production runs, use the **robust runner** (Option 1).
+**Full Mode:** Runs all 9 configurations (3 E values × 3 B values) for both IID and Non-IID partitions.
 
 ### 📊 Example Outputs
 
