@@ -8,7 +8,7 @@ Please refer to the original paper for further conceptual and theoretical detail
 
 This repository's contents serve three purposes:
 1.  **General Framework**: A flexible simulation framework (`fedavg_simulation` and `fedavg`) to run Federated Learning with Federated Averaging on your own datasets and models. This is the `fedavgR` package.
-2.  **Paper Reproduction**: Example scripts and outputs for reproducing experiments from McMahan et al. (2017) on MNIST and CIFAR-10 datasets. (See [`inst/reproduction_outputs/README.md`](https://github.com/juliana4850/FLfedavgR/blob/44fb84ae89a0bfc242f1311ec7151dbdd6e3c0ae/inst/reproduction_outputs/README.md#paper-reproduction-outputs) for more details.)
+2.  **Paper Reproduction**: Example scripts and outputs for reproducing experiments from McMahan et al. (2017) on MNIST and CIFAR-10 datasets. (See [`inst/reproduction_outputs/README.md`](https://github.com/juliana4850/FLfedavgR/blob/9ccc91f9279333252159a49e12c244e19da14cc2/inst/reproduction_outputs/README.md) for more details.)
 3. **GenAI Tutorial**: An educational reference resource on using GenAI tools to generate the code for creating this R package. (See [`docs/GENAI_TUTORIAL.md`](https://github.com/juliana4850/FLfedavgR/blob/44fb84ae89a0bfc242f1311ec7151dbdd6e3c0ae/docs/GENAI_TUTORIAL.md).)
 
 ## 📦 Installation
@@ -119,7 +119,7 @@ cd FLfedavgR
 R -e "devtools::install_local('.', force = TRUE)"
 ```
 
-**Note**: Please refer to [`inst/reproduction_outputs/README.md`](https://github.com/juliana4850/FLfedavgR/blob/44fb84ae89a0bfc242f1311ec7151dbdd6e3c0ae/inst/reproduction_outputs/README.md#paper-reproduction-outputs) for full details on how to rerun the paper reproduction experiments. Below, I provide a quick overview of outputs for the MNIST CNN experiments reproduction scripts.
+**Note**: Please refer to [`inst/reproduction_outputs/README.md`](https://github.com/juliana4850/FLfedavgR/blob/9ccc91f9279333252159a49e12c244e19da14cc2/inst/reproduction_outputs/README.md) for full details on how to rerun the paper reproduction experiments. Below, I provide a quick overview of outputs for the MNIST CNN experiments reproduction scripts.
 
 ### 📊 Example Outputs
 
