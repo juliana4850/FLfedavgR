@@ -84,6 +84,20 @@ LR=0.15 ROUNDS=2000 LOG_FILE=inst/reproduction_outputs/metrics_cifar10_lr15.csv 
 ```
 Recommendation for quick testing: Run with ROUNDS=5 to verify the script runs. On CPU, this may take about ~1 minute per round.
 
+
+To rerun the full 3000 round CIFAR-10 FedAvg experiments from the McMahan et al. (2017) paper:
+
+```bash
+# Run the full CIFAR-10 experiment reproduction script with LR=0.05 and ROUNDS=3000
+LR=0.05 ROUNDS=3000 LOG_FILE=inst/reproduction_outputs/metrics_cifar10_lr05.csv MODEL_FILE=inst/reproduction_outputs/cifar10_lr05_final_model.pt Rscript inst/tutorials/demo_cifar10.R
+
+# Run the full CIFAR-10 experiment reproduction script with LR=0.15 and ROUNDS=3000
+LR=0.15 ROUNDS=3000 LOG_FILE=inst/reproduction_outputs/metrics_cifar10_lr15.csv MODEL_FILE=inst/reproduction_outputs/cifar10_lr15_final_model.pt Rscript inst/tutorials/demo_cifar10.R
+
+# Run the full CIFAR-10 experiment reproduction script with LR=0.25 and ROUNDS=3000
+LR=0.25 ROUNDS=3000 LOG_FILE=inst/reproduction_outputs/metrics_cifar10_lr25.csv MODEL_FILE=inst/reproduction_outputs/cifar10_lr25_final_model.pt Rscript inst/tutorials/demo_cifar10.R
+```
+
 ## Reference
 
 McMahan, H. B., Moore, E., Ramage, D., Hampson, S., & y Arcas, B. A. (2017). 
