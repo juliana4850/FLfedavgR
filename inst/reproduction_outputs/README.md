@@ -100,10 +100,9 @@ LR=0.25 ROUNDS=3000 LOG_FILE=inst/reproduction_outputs/metrics_cifar10_lr25.csv 
 
 ## Reference
 
-McMahan, H. B., Moore, E., Ramage, D., Hampson, S., & y Arcas, B. A. (2017). 
-Communication-Efficient Learning of Deep Networks from Decentralized Data. 
+McMahan, H. B., Moore, E., Ramage, D., Hampson, S., & y Arcas, B. A. (2017).
+[Communication-Efficient Learning of Deep Networks from Decentralized Data](https://arxiv.org/abs/1602.05629).
 *Proceedings of the 20th International Conference on Artificial Intelligence and Statistics (AISTATS)*.
-https://arxiv.org/abs/1602.05629
 
 
 

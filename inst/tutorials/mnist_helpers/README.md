@@ -219,4 +219,6 @@ You can then use the **generic `fedavg_simulation()`** framework directly, or cr
 
 ## References
 
-McMahan, H. B., Moore, E., Ramage, D., Hampson, S., & y Arcas, B. A. (2017). Communication-efficient learning of deep networks from decentralized data. In *Artificial Intelligence and Statistics* (pp. 1273-1282). PMLR.
+McMahan, H. B., Moore, E., Ramage, D., Hampson, S., & y Arcas, B. A. (2017).
+[Communication-Efficient Learning of Deep Networks from Decentralized Data](https://arxiv.org/abs/1602.05629).
+*Proceedings of the 20th International Conference on Artificial Intelligence and Statistics (AISTATS)*.

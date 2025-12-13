@@ -126,8 +126,9 @@ R -e "devtools::install_local('.', force = TRUE)"
 > **Note**: Due to randomization in the data partitioning and model training process, the reproduction outputs WILL vary from the paper and between runs. These example outputs are provided for reference.
 
 Example results are saved to `inst/reproduction_outputs/`:
-*   **`metrics_mnist_cnn.csv`**: Raw logs of every round (accuracy, loss, etc.).
-*   **`figure2_reproduction_IID.png`**: Plot comparing FedAvg vs FedSGD for IID partition.
+*   **`metrics_mnist_cnn.csv`**: Raw logs of every round for MNIST CNN experiment example results.
+*   **`figure2_reproduction_IID.png`**: Plot comparing FedAvg vs FedSGD for IID partition example results.
+*   **`metrics_cifar10_lr15.csv`**: Raw logs of every round for CIFAR-10 FedAvg experiment with learning rate 0.15 example results.
 
 ### Figure 2: Test Set Accuracy vs Communication Rounds for MNIST CNN (IID)
 
